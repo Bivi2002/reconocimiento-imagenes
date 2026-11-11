@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Reconocedor MNIST</title>
+    <style>
+        #preview { max-width: 280px; max-height: 280px; image-rendering: pixelated; }
+    </style>
+</head>
+<body>
+
+    <h1>Reconocedor de Números (IA)</h1>
+    <p>Sube una imagen de un número escrito a mano (0-9).</p>
+
+    <form id="formulario">
+        <input type="file" id="inputImagen" accept="image/*" required>
+
+        <div class="preview-caja">
+            <img id="preview" style="display: none;" alt="Previsualización">
+            <span id="textoPreview">Vista previa de la imagen</span>
+        </div>
+
+        <button type="submit" id="btnEnviar">Analizar Imagen</button>
+    </form>
+
+    <div id="resultado"></div>
+
+    <script>
+        const inputImagen = document.getElementById('inputImagen');
+        const preview = document.getElementById('preview');
+        const textoPreview = document.getElementById('textoPreview');
+        const formulario = document.getElementById('formulario');
+        const btnEnviar = document.getElementById('btnEnviar');
+        const divResultado = document.getElementById('resultado');
+
+        inputImagen.addEventListener('change', function () {
+            const file = this.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function (e) {
+                    preview.src = e.target.result;
+                    preview.style.display = 'block';
+                    textoPreview.style.display = 'none';
+                    divResultado.innerHTML = '';
+                };
+                reader.readAsDataURL(file);
+            }
+        });
+
+        formulario.addEventListener('submit', async function (e) {
+            e.preventDefault();
+            const file = inputImagen.files[0];
+            if (!file) return;
+
+            btnEnviar.disabled = true;
+            btnEnviar.textContent = 'Procesando...';
+            divResultado.innerHTML = '';
+
+            const formData = new FormData();
+            formData.append('imagen', file);
+
+            try {
+                const response = await fetch('/predecir', {
+                    method: 'POST',
+                    body: formData
+                });
+
+                const data = await response.json();
+
+                if (response.ok) {
+                    divResultado.innerHTML = `¡Es un ${data.numero}! <br><small style="color: gray">Confianza: ${data.confianza}%</small>`;
+                } else {
+                    divResultado.innerHTML = `<span style="color: red">Error: ${data.error}</span>`;
+                }
+            } catch (error) {
+                divResultado.innerHTML = `<span style="color: red">Error de conexión con el servidor.</span>`;
+            } finally {
+                btnEnviar.disabled = false;
+                btnEnviar.textContent = 'Analizar Imagen';
+            }
+        });
+    </script>
+</body>
+</html>          ese es el codigo
