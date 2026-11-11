@@ -12,9 +12,9 @@ Modelo de IA en Python (TensorFlow/Keras) que reconoce dígitos del 0 al 9 a par
 
 ## Cómo ejecutarlo
 
-1. Instala las dependencias: `pip install -r requirements.txt`
-2. Inicia el servidor: `python app.py`
-3. Abre http://127.0.0.1:5000, sube una imagen de un número y pulsa **Analizar Imagen**.
+1. Instalar las dependencias: `pip install -r requirements.txt`
+2. Iniciar el servidor: `python app.py`
+3. Abrir http://127.0.0.1:5000, sube una imagen de un número y pulsa **Analizar Imagen**.
 
 ## Preprocesamiento de la imagen
 
