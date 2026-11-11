@@ -7,19 +7,17 @@ from tensorflow.keras.models import load_model
 
 app = Flask(__name__)
 
-# Carga el modelo una sola vez al iniciar el servidor
 model = load_model("modelo.h5")
 
 
 def preparar_imagen(archivo):
     """Mismo preprocesamiento que en el notebook de Colab."""
-    img = Image.open(io.BytesIO(archivo.read())).convert("L")  # escala de grises
-    img = ImageOps.invert(img)                                  # invertir colores
-    img = img.resize((28, 28))                                  # 28x28
-    arr = np.array(img) / 255.0                                 # normalizar
-    arr = np.expand_dims(arr, axis=0)                           # (1, 28, 28)
+    img = Image.open(io.BytesIO(archivo.read())).convert("L") 
+    img = ImageOps.invert(img)                                  
+    img = img.resize((28, 28))                                 
+    arr = np.array(img) / 255.0                                
+    arr = np.expand_dims(arr, axis=0)                           
 
-    # Si el modelo espera canal (28, 28, 1), se lo agregamos
     if len(model.input_shape) == 4:
         arr = np.expand_dims(arr, axis=-1)
     return arr
